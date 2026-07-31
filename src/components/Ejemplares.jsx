@@ -26,13 +26,13 @@ function Ejemplares() {
         }
     };
 
-    const cargarLibros = async = () => {
-        try{
-            const res = await listarLibros();
-            setLibros(res.data);
-        }catch (err){
-            setError("No se pudieron cargar los libros");
-        }
+    const cargarLibros = async () => {
+      try {
+        const res = await listarLibros();
+        setLibros(res.data);
+      } catch (err) {
+        setError("No se pudieron cargar los libros.");
+      }
     };
 
     const guardar = async (e) => {
