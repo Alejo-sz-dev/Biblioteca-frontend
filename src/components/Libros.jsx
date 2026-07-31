@@ -17,10 +17,15 @@ function Libros() {
   });
   const [editandoId, setEditandoId] = useState(null);
   const [error, setError] = useState("");
+  const [exito, setExito] = useState("");
 
   useEffect(() => {
     cargarLibros();
   }, []);
+  const mostrarExito = (mensaje) => {
+    setExito(mensaje);
+    setTimeout(() => setExito(""), 3000);
+  };
 
   const cargarLibros = async () => {
     try {
@@ -39,24 +44,31 @@ function Libros() {
   const guardar = async (e) => {
     e.preventDefault();
     setError("");
-    // Si la fecha esta vacia, la enviamos como null (no como "")
+  
     const datos = {
       ...formulario,
       fechaPublicacion: formulario.fechaPublicacion || null,
     };
+  
     try {
+      const accion = editandoId ? "actualizado" : "creado";
+  
       if (editandoId) {
         await actualizarLibro(editandoId, datos);
       } else {
         await crearLibro(datos);
       }
+  
       limpiarFormulario();
       await cargarLibros();
+      mostrarExito(`Libro ${accion} correctamente.`);
     } catch (err) {
-      setError("Error al guardar: " + (err.response?.data?.message || "revisa los datos (¿ISBN repetido?)"));
+      setError(
+        "Error al guardar: " +
+          (err.response?.data?.message || "revisa los datos (¿ISBN repetido?)")
+      );
     }
   };
-
   const editar = (libro) => {
     setEditandoId(libro.id);
     setFormulario({
@@ -73,6 +85,7 @@ function Libros() {
     try {
       await eliminarLibro(id);
       await cargarLibros();
+      mostrarExito("Libro eliminado correctamente.");
     } catch (err) {
       setError("No se pudo eliminar el libro.");
     }
@@ -88,6 +101,7 @@ function Libros() {
       <h2>Gestión de Libros</h2>
 
       {error && <div className="mensaje-error">{error}</div>}
+      {exito && <div className="toast-exito">{exito}</div>}
 
       <form onSubmit={guardar} className="formulario">
         <input type="text" name="titulo" placeholder="Título"

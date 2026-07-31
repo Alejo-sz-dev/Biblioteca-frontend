@@ -17,10 +17,16 @@ function Usuarios() {
 
   const [editandoId, setEditandoId] = useState(null);
   const [error, setError] = useState("");
+  const [exito, setExito] = useState("");
 
   useEffect(() => {
     cargarUsuarios();
   }, []);
+
+  const mostrarExito = (mensaje) => {
+    setExito(mensaje);
+    setTimeout(() => setExito(""), 3000);
+  };
 
   const cargarUsuarios = async () => {
     try {
@@ -41,20 +47,23 @@ function Usuarios() {
     }));
   };
 
-  // Guarda (crear o actualizar)
+  
   const guardar = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     try {
+      const accion = editandoId ? "actualizado" : "creado";
+  
       if (editandoId) {
         await actualizarUsuario(editandoId, formulario);
       } else {
         await crearUsuario(formulario);
       }
-
+  
       limpiarFormulario();
       await cargarUsuarios();
+      mostrarExito(`Usuario ${accion} correctamente.`);
     } catch (err) {
       setError("Error al guardar. Revisa que el email no esté repetido.");
     }
@@ -78,6 +87,7 @@ function Usuarios() {
     try {
       await eliminarUsuario(id);
       await cargarUsuarios();
+      mostrarExito("Usuario eliminado correctamente.");
     } catch (err) {
       setError("No se pudo eliminar el usuario");
     }
@@ -98,6 +108,7 @@ function Usuarios() {
       <h2>Gestión de Usuarios</h2>
 
       {error && <div className="mensaje-error">{error}</div>}
+      {exito && <div className="toast-exito">{exito}</div>}
 
       {/* FORMULARIO */}
       <form onSubmit={guardar} className="formulario">

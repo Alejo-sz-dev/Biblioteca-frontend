@@ -10,11 +10,17 @@ function Prestamos() {
   const [usuarioId, setUsuarioId] = useState("");
   const [ejemplarId, setEjemplarId] = useState("");
   const [error, setError] = useState("");
+  const [exito, setExito] = useState("");
   const [filtroUsuario, setFiltroUsuario] = useState("");
 
   useEffect(() => {
     cargarTodo();
   }, []);
+
+  const mostrarExito = (mensaje) => {
+    setExito(mensaje);
+    setTimeout(() => setExito(""), 3000);
+  };
 
   const cargarTodo = async () => {
     await cargarPrestamos();
@@ -57,6 +63,7 @@ function Prestamos() {
       setUsuarioId("");
       setEjemplarId("");
       await cargarTodo();
+      mostrarExito("Registro generado correctamente.");
     } catch (err) {
       setError("Error: " + (err.response?.data?.message || "no se pudo registrar el préstamo"));
     }
@@ -88,6 +95,7 @@ function Prestamos() {
       <h2>Gestión de Préstamos</h2>
 
       {error && <div className="mensaje-error">{error}</div>}
+      {exito && <div className="toast-exito">{exito}</div>}
 
       <form onSubmit={registrar} className="formulario">
         <select value={usuarioId} onChange={(e) => setUsuarioId(e.target.value)} required>

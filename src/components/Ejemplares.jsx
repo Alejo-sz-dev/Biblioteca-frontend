@@ -8,6 +8,7 @@ function Ejemplares() {
   const [libroId, setLibroId] = useState("");
   const [codigo, setCodigo] = useState("");
   const [error, setError] = useState("");
+  const [exito, setExito] = useState("");
   const [isbnBusqueda, setIsbnBusqueda] = useState("");
   const [disponibles, setDisponibles] = useState(null);
 
@@ -15,6 +16,11 @@ function Ejemplares() {
     cargarEjemplares();
     cargarLibros();
   }, []);
+
+  const mostrarExito = (mensaje) => {
+    setExito(mensaje);
+    setTimeout(() => setExito(""), 3000);
+  };
 
   const cargarEjemplares = async () => {
     try {
@@ -46,6 +52,7 @@ function Ejemplares() {
       setCodigo("");
       setLibroId("");
       await cargarEjemplares();
+      mostrarExito("Ejemplar creado correctamente.");
     } catch (err) {
       setError("Error al crear el ejemplar: " + (err.response?.data?.message || "revisa los datos"));
     }
@@ -56,6 +63,7 @@ function Ejemplares() {
     try {
       await eliminarEjemplar(id);
       await cargarEjemplares();
+      mostrarExito("Ejemplar eliminado correctamente.");
     } catch (err) {
       setError("No se pudo eliminar el ejemplar.");
     }
@@ -78,6 +86,7 @@ function Ejemplares() {
       <h2>Gestión de Ejemplares</h2>
 
       {error && <div className="mensaje-error">{error}</div>}
+      {exito && <div className="toast-exito">{exito}</div>}
 
       <form onSubmit={guardar} className="formulario">
         <select value={libroId} onChange={(e) => setLibroId(e.target.value)} required>

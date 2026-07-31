@@ -6,26 +6,18 @@ import Prestamos from "./components/Prestamos";
 import "./App.css";
 
 function App() {
-  // Guarda qué pestaña está activa. Empieza en "usuarios".
   const [seccionActiva, setSeccionActiva] = useState("usuarios");
 
-  // Segun la pestaña activa, decide qué componente mostrar.
   const renderizarSeccion = () => {
     switch (seccionActiva) {
-      case "usuarios":
-        return <Usuarios />;
-      case "libros":
-        return <Libros />;
-      case "ejemplares":
-        return <Ejemplares />;
-      case "prestamos":
-        return <Prestamos />;
-      default:
-        return <Usuarios />;
+      case "usuarios": return <Usuarios />;
+      case "libros": return <Libros />;
+      case "ejemplares": return <Ejemplares />;
+      case "prestamos": return <Prestamos />;
+      default: return <Usuarios />;
     }
   };
 
-  // Lista de pestañas (para no repetir codigo)
   const pestanas = [
     { id: "usuarios", label: "Usuarios" },
     { id: "libros", label: "Libros" },
@@ -36,21 +28,31 @@ function App() {
   return (
     <div className="app">
       <header className="encabezado">
-        <h1>📚 Biblioteca</h1>
-        <p>Sistema de gestión</p>
-      </header>
+        <div className="marca">
+          {/* Logo SVG de libro */}
+          <svg className="logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4.5C4 3.67 4.67 3 5.5 3H18a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5.5A1.5 1.5 0 0 1 4 18.5v-14Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/>
+            <path d="M8 3v14" stroke="currentColor" strokeWidth="1.6"/>
+            <path d="M4 18.5A1.5 1.5 0 0 1 5.5 17H20" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/>
+          </svg>
+          <div className="marca-texto">
+            <h1>Biblioteca Central</h1>
+            <h3>Sistema de gestión</h3>
+          </div>
+        </div>
 
-      <nav className="navegacion">
-        {pestanas.map((pestana) => (
-          <button
-            key={pestana.id}
-            className={seccionActiva === pestana.id ? "tab tab-activa" : "tab"}
-            onClick={() => setSeccionActiva(pestana.id)}
-          >
-            {pestana.label}
-          </button>
-        ))}
-      </nav>
+        <nav className="menu">
+          {pestanas.map((pestana) => (
+            <button
+              key={pestana.id}
+              className={seccionActiva === pestana.id ? "menu-item menu-activo" : "menu-item"}
+              onClick={() => setSeccionActiva(pestana.id)}
+            >
+              {pestana.label}
+            </button>
+          ))}
+        </nav>
+      </header>
 
       <main className="contenido">{renderizarSeccion()}</main>
     </div>
